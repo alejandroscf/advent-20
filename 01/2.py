@@ -14,7 +14,14 @@ i = 0
 j = len(expenses) - 1
 k = 1
 
-while i != j:
+#jj = expenses[j] + expenses[j-1]
+#while jj >= total:
+#    j=j-1
+#    jj = expenses[j] + expenses[j-1]
+
+tj = j
+
+while i != j - 1:
     print("i: " + str(i) + " -> " + str(expenses[i]))
     print("j: " + str(j) + " -> " + str(expenses[j]))
     print("k: " + str(k) + " -> " + str(expenses[k]))
@@ -29,17 +36,18 @@ while i != j:
             print(expenses[j])
             print(expenses[k])
             break
-        elif ijk < total:
-            if k + 1 == j:
-                i=i+1
-                k=i+1
-            else:
-                k=k+1
-        else:
+        if i == j - 2:
+            j=tj
+            i=i+1
             k=i+1
+        elif k + 1 == j or ijk > total:
             j=j-1
+            k=i+1
+        else:
+            k=k+1
     else:
         j=j-1
+        tj=j
         
     print("----------------------------------------")
 
