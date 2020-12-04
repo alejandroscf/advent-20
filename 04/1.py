@@ -2,9 +2,6 @@
 
 import sys
 
-# sys.argv[1]: horizontal movement (rigth > 0)
-# sys.argv[2]: vertical movement (down > 0)
-
 passports = []
 passport = {}
 for line in sys.stdin:
@@ -25,11 +22,14 @@ result = 0
 for passport in passports:
     valid = True
     #for key in ("byr","iyr","eyr","hgt","hcl","pid","cid"):
-    for key in ("byr","iyr","eyr","hgt","hcl","pid"):
+    print(passport)
+    for key in ("byr","iyr","eyr","hgt","hcl","ecl","pid"):
         if key in passport:
             valid = valid and True
         else:
             valid = False
     if valid:
+        print("valid")
         result = result + 1
+    print("======================")
 print(result)
