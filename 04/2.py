@@ -27,10 +27,10 @@ for passport in passports:
     for key in ("byr","iyr","eyr","hgt","hcl","ecl","pid"):
         if key in passport:
             if key == "byr":
-                valid = valid and int(passport["byr"]) > 1920 and int(passport["byr"]) < 2002
+                valid = valid and int(passport["byr"]) >= 1920 and int(passport["byr"]) <= 2002
                 print(valid)
             elif key == "iyr":
-                valid = valid and int(passport["iyr"]) > 2010 and int(passport["iyr"]) < 2020
+                valid = valid and int(passport["iyr"]) >= 2010 and int(passport["iyr"]) <= 2020
                 print(valid)
             elif key == "eyr":
                 valid = valid and int(passport["eyr"]) >= 2020 and int(passport["eyr"]) <= 2030
@@ -40,7 +40,13 @@ for passport in passports:
                 num_in=re.findall("^(\d+)in$",passport["hgt"])
                 #print(num_cm)
                 #print(num_in)
-                valid = valid and ((int(num_cm[0]) >= 150 and int(num_cm[0]) <= 193) or (int(num_in[0]) >= 59 and int(num_in[0]) <= 76))
+                #valid = valid and ((int(num_cm[0]) >= 150 and int(num_cm[0]) <= 193) or (int(num_in[0]) >= 59 and int(num_in[0]) <= 76))
+                if len(num_cm) == 1:
+                    valid = valid and (int(num_cm[0]) >= 150 and int(num_cm[0]) <= 193)
+                elif len(num_in) == 1:
+                    valid = valid and (int(num_in[0]) >= 59 and int(num_in[0]) <= 76)
+                else:
+                    valid = False
                 print(valid)
             elif key == "hcl":
                 valid = valid and re.search("^#[0-9a-f]{6}$",passport["hcl"])
