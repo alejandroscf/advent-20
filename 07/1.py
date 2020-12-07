@@ -18,33 +18,30 @@ for line in sys.stdin:
     
     #print(contents) 
 
-print(bags)
+#print(bags)
 #print(len(bags))
-print()
+#print()
 
-print(bags['shiny gold'])
-print(len(bags['shiny gold']))
+#print(bags['shiny gold'])
+#print(len(bags['shiny gold']))
 
-print()
+#print()
 
 def find_container(color):
-    print('-----find_container-----')
-    print(color)
+    #print('-----find_container-----')
+    #print(color)
     if color not in bags:
-        print('color not in bag')
+        #print('color not in bag')
         return set()
     else:
-        print(bags[color])
+        #print(bags[color])
         bag_set = set(color for color, num in bags[color])
-        print(bag_set)
+        #print(bag_set)
         for container in bag_set.copy():
-            new_containers = find_container(container)
-            for new_container in new_containers:
-                bag_set.add(new_container)
+            bag_set.update(find_container(container))
         return bag_set
 
-bag_set = set()
 color = 'shiny gold'
 bag_set = find_container(color)
-print(bag_set)
+#print(bag_set)
 print(len(bag_set))
