@@ -50,15 +50,14 @@ def find_container(color):
 def find_content(color):
     #print('-----find_content-----')
     #print(color)
+    num_result = 1
     if color in inverse_bags:
         #print(inverse_bags[color])
         for bag in inverse_bags[color]:
-            for i in range(int(inverse_bags[color][bag])):
-                result.append(bag)
-                find_content(bag)
+            num_result += int(inverse_bags[color][bag]) * find_content(bag)
+    return num_result
 
-result = []
 color = 'shiny gold'
-find_content(color)
-#print(result)
-print(len(result))
+
+# Remove 1 as we want the bags inside the first one!
+print(find_content(color) - 1)
