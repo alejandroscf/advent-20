@@ -32,19 +32,17 @@ for line in sys.stdin:
 #print()
 
 def find_container(color):
-    print('-----find_container-----')
-    print(color)
+    #print('-----find_container-----')
+    #print(color)
     if color not in bags:
-        print('color not in bag')
+        #print('color not in bag')
         return set()
     else:
-        print(bags[color])
+        #print(bags[color])
         bag_set = set(color for color, num in bags[color])
-        print(bag_set)
+        #print(bag_set)
         for container in bag_set.copy():
-            new_containers = find_container(container)
-            for new_container in new_containers:
-                bag_set.add(new_container)
+            bag_set.update(find_container(container))
         return bag_set
 
 def find_content(color):
