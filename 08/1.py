@@ -3,24 +3,32 @@
 import sys
 import re
 
-proccesor = {
+proccessor = {
     'accumulator' : 0,
     'current_ins' : 0,
     'next_ins' : 1, 
 }
 
+def reset_processor():
+    global proccessor
+    proccessor = {
+        'accumulator' : 0,
+        'current_ins' : 0,
+        'next_ins' : 1, 
+    }
+    
 def op_acc(param):
-    global proccesor
-    proccesor['next_ins'] = proccesor['current_ins'] + 1
-    proccesor['accumulator'] += int(param)
+    global proccessor
+    proccessor['next_ins'] = proccessor['current_ins'] + 1
+    proccessor['accumulator'] += int(param)
 
 def op_jmp(param):
-    global proccesor
-    proccesor['next_ins'] = proccesor['current_ins'] + int(param)
+    global proccessor
+    proccessor['next_ins'] = proccessor['current_ins'] + int(param)
 
 def op_nop(param):
-    global proccesor
-    proccesor['next_ins'] = proccesor['current_ins'] + 1
+    global proccessor
+    proccessor['next_ins'] = proccessor['current_ins'] + 1
 
 operations = { 
     'acc': op_acc, 
@@ -31,15 +39,18 @@ operations = {
 def loop_detector(processor, instructions):
     
     used_ins = set()
-    while True:
-        #print(proccesor)
-        if proccesor['current_ins'] in used_ins:
-            print('bucle!')
-            return proccesor['accumulator']
-        execute(instructions[proccesor['current_ins']])
-        used_ins.add(proccesor['current_ins'])
-        proccesor['current_ins'] = proccesor['next_ins']
-        #proccesor['next_ins'] += 1
+    while proccessor['current_ins'] != len(instructions):
+        #print(proccessor)
+        if proccessor['current_ins'] in used_ins:
+            #print('bucle!')
+            #print(proccessor['accumulator'])
+            return False
+        execute(instructions[proccessor['current_ins']])
+        used_ins.add(proccessor['current_ins'])
+        proccessor['current_ins'] = proccessor['next_ins']
+        #proccessor['next_ins'] += 1
+    #print(proccessor['accumulator'])
+    return True
 
 def execute(instruction):
     
@@ -56,5 +67,27 @@ instructions = []
 
 for line in sys.stdin:
     instructions.append(line.strip())
+# Part one
+print('Executing part one')
+loop_detector(proccessor, instructions)
+print(proccessor['accumulator'])
 
-print(loop_detector(proccesor, instructions))
+# Part two
+print('Executing part two')
+
+for idx, ins in enumerate(instructions):
+    reset_processor()
+    mod_instructions = instructions.copy()
+    #print(str(idx) + ": " + ins )
+    if ins.split(' ')[0] == 'jmp':
+        mod_instructions[idx] = instructions[idx].replace('jmp','nop') 
+        if loop_detector(proccessor, mod_instructions):
+            break
+    elif ins.split(' ')[0] == 'nop':
+        mod_instructions[idx] = instructions[idx].replace('nop','jmp') 
+        if loop_detector(proccessor, mod_instructions):
+            break
+    
+    #print(mod_instructions)
+
+print(proccessor['accumulator'])
