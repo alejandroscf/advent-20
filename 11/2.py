@@ -5,9 +5,11 @@ import copy
 #import re
 
 seats = []
+seats_in_view = []
 
 for line in sys.stdin:
     seats.append([ pixel for pixel in line.strip()])
+    seats_in_view.append([ [] for pixel in line.strip()])
 
 #print(seats)
 print(len(seats))
@@ -23,31 +25,36 @@ directions = [
     (0, 1)
 ]
 
+def complete_seats_in_view(seats, seats_in_view):
+    for i, row in enumerate(seats):
+        for j, seat in enumerate(row):
+            for delta_i, delta_j in directions:
+                idx = i + delta_i
+                jdx = j + delta_j
+                while idx >= 0 and idx < len(seats) and jdx >= 0 and jdx < len(seats[i]) and seats[idx][jdx] == '.':
+                    #print("un poquico mas")
+                    idx = idx + delta_i
+                    jdx = jdx + delta_j
+
+                if idx < 0 or idx >= len(seats) or jdx < 0 or jdx >= len(seats[0]):
+                    #print("que te sales")
+                    continue
+
+                if seats[idx][jdx] in {'#', 'L'}:
+                    #print("chunk")
+                    #seats_occ += 1
+                    seats_in_view[i][j].append([idx, jdx])
+    return seats_in_view
+
 
 def occupied_in_view(seats, i, j):
     seats_occ = 0
-    for delta_i, delta_j in directions:
-        #print("delta", delta_i, delta_j)
-        idx = i + delta_i
-        jdx = j + delta_j
-        #print(idx, jdx, seats[idx][jdx])
-
-        while idx >= 0 and idx < len(seats) and jdx >= 0 and jdx < len(seats[0]) and seats[idx][jdx] == '.':
-            #print("un poquico mas")
-            idx = idx + delta_i
-            jdx = jdx + delta_j
-        #print(seats[idx][jdx])
-
-        if idx < 0 or idx >= len(seats) or jdx < 0 or jdx >= len(seats[0]):
-            #print("que te sales")
-            continue
-
-
+    for idx, jdx in seats_in_view[i][j]:
         if seats[idx][jdx] == '#':
             #print("chunk")
             seats_occ += 1
     return seats_occ
-
+        
 def occupied_around(seats,i, j):
     down_i = i-1
     down_j = j-1
@@ -88,6 +95,7 @@ def update_seats(seats):
 # Part one
 print('Executing part two')
 #print(occupied_in_view(seats, 0, 0))
+seats_in_view = complete_seats_in_view(seats, seats_in_view)
 next_seats = seats
 last_seats = []
 while next_seats != last_seats:
