@@ -15,6 +15,21 @@ for line in sys.stdin:
 
 for idx, freq in enumerate(file_lines[1].split(',')):
     if freq != 'x':
-        freqs[idx] = int(freq)
+        freqs[int(freq)] = idx
 
-print(freqs)
+#print(freqs)
+lfreqs=list(freqs)
+#print(lfreqs)
+
+leap = lfreqs[0]
+phase = 0
+last_time = 0
+
+for bus in lfreqs[1:]:
+    #print("bus" + str(bus))
+    phase = freqs[bus]
+    while (last_time + freqs[bus])%bus != 0:
+        #print(last_time)
+        last_time += leap
+    leap *= bus
+print(last_time)
