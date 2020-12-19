@@ -2,7 +2,7 @@
 
 import sys
 #import copy
-import re
+import regex
 
 rules = {}
 messages = []
@@ -14,7 +14,8 @@ def proccess_rule(num):
     if num == '8':
         return "(" + proccess_rule('42') + ")+"
     if num == '11':
-        return "(?P<g111>" + proccess_rule('42') + ")+(?P<g112>" + proccess_rule('31') + ")+"
+        return "(?P<g11>(?P<g111>(" + proccess_rule('42') + ")){X}(?P<g112>(" + proccess_rule('31') + ")){X})"
+        #return "(?P<g11>(?P<g111>(" + proccess_rule('42') + "))(?&g11)(?P<g112>(" + proccess_rule('31') + ")))"
     if rules[num][0] == '"':
         return rules[num][1]
     else:
@@ -51,13 +52,17 @@ rules['11'] = '42 31 | 42 11 31'
 
 #print(rules)
 #print(messages)
-regex = '^' + proccess_rule('0') + '$'
-print(regex)
-
-reg_c = re.compile(regex)
+regex_s = '^' + proccess_rule('0') + '$'
+print(regex_s)
+reg_c = []
+for i in range(1, 10):
+    reg_c.append(regex.compile(regex_s.replace('X',str(i)), regex.VERSION1))
 
 valid = 0
 for message in messages:
-    if reg_c.match(message):
-        valid += 1
+    for reg in reg_c:
+        m = reg.match(message)
+        if reg.match(message):
+            #print(m.groupdict())
+            valid += 1
 print(valid)
