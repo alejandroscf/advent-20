@@ -13,6 +13,7 @@ forest_tile = {}
 #    borders:
 #    rotate:
 #    flip:
+#    fixed
 #    adjacent_n
 #    adjacent_s
 #    adjacent_e
@@ -27,6 +28,7 @@ for line in sys.stdin:
         tile_num = int(tile_num.group(1))
         forest_tile[tile_num] = {}
         forest_tile[tile_num]['content'] = []
+        forest_tile[tile_num]['fixed'] = False
     else:
         forest_tile[tile_num]['content'].append([ pixel for pixel in line.strip()])
 
@@ -34,23 +36,24 @@ for line in sys.stdin:
 @lru_cache(maxsize=len(forest_tile))
 def extract_borders(tile):
     tile = forest_tile[tile]['content']
-    result = set()
-    f_row = tile[0][0:width]
-    result.add(''.join(f_row))
-    #result.add(''.join(reversed(f_row)))
+    result = list()
 
-    l_row = tile[height-1][0:width]
-    result.add(''.join(l_row))
-    #result.add(''.join(reversed(l_row)))
-    
-    f_col = [row[0] for row in tile]
-    result.add(''.join(f_col))
-    #result.add(''.join(reversed(f_col)))
+    f_row = tile[0][0:width]
+    result.append(''.join(f_row))
+    #result.append(''.join(reversed(f_row)))
 
     l_col = [row[-1] for row in tile]
-    result.add(''.join(l_col))
-    #result.add(''.join(reversed(l_col)))
+    result.append(''.join(l_col))
+    #result.append(''.join(reversed(l_col)))
     
+    l_row = tile[height-1][0:width]
+    result.append(''.join(l_row))
+    #result.append(''.join(reversed(l_row)))
+    
+    f_col = [row[0] for row in tile]
+    result.append(''.join(f_col))
+    #result.append(''.join(reversed(f_col)))
+
     return result
 
 #print(forest_tile)
@@ -90,16 +93,25 @@ print(corners)
 print(result)
 print("part two")
 
+# Orientar una esquina
+tile = corners.pop()
+corners.add(tile)
+fr, lc, lr, fc = forest_tile[tile]['borders']
 
 
-for tile in forest_tile:
-    print(tile)
-    for border in forest_tile[tile]['borders']:
-        r_border = ''.join(reversed(border))
-        if border in borders:
-            print(borders[border])
-        if r_border in borders:
-            print(borders[r_border])
+def orientate(tile):
+    if forest_tile[tile]['fixed']:
+        return
+    else:
+        print(tile)
+        for side, border in zip(('fr', 'lc', 'lr', 'fc'), forest_tile[tile]['borders']):
+            r_border = ''.join(reversed(border))
+            if border in borders:
+                print(side, set(borders[border]))
+            if r_border in borders:
+                print(side, borders[r_border])
             
+    forest_tile[tile]['fixed'] = True
 
 
+orientate(tile)
