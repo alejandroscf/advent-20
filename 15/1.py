@@ -18,11 +18,10 @@ for num in init_numbers:
     inv_numbers[int(num)] = turn
     turn += 1
 
-#print(numbers)
-#print(inv_numbers)
-#print(turn)
-while turn <= 2020:
-#while turn <= 10:
+while turn <= int(sys.argv[1]):
+    if turn % 1000000 == 0:
+        print('turn:', turn)
+    
     last_num = numbers[turn-2]
     #print('last_num',last_num)
     if last_num in inv_numbers:
@@ -34,4 +33,5 @@ while turn <= 2020:
     numbers.append(new_num)
     inv_numbers[last_num] = turn - 1
     turn += 1
+print('turn:', turn-1)
 print(numbers[turn-2])
